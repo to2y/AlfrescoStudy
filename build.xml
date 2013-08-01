@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+
+<project name="StudyPublishDoc" default="deploy-all"
+	basedir=".">
+
+    <!-- change settings for your envirionment -->
+    <property name="alfresco.home" value="/Users/totanitakeshi/Desktop/alfresco/alfresco-comm42c-study" />
+    <property name="project.dir" value="." />
+    <property name="alfresco.lib.dir"
+            value="${alfresco.home}/tomcat/webapps/alfresco/WEB-INF/lib" />
+    <property name="alfresco.shared.dir"
+            value="${alfresco.home}/tomcat/shared/classes/alfresco" />
+
+    <property name="web.dir" value="${project.dir}/web" />
+
+	<property name="encoding" value="UTF-8" />
+	
+    <path id="alfresco.classpath">
+            <fileset dir="${alfresco.home}/tomcat/lib">
+                    <include name="*.jar" />
+            </fileset>
+            <fileset dir="${alfresco.lib.dir}">
+                    <include name="*.jar" />
+            </fileset>
+    </path>
+
+    <target name="clean">
+            <delete dir="${build.dir}/dist" />
+            <delete dir="${build.dir}/lib" />
+    </target>
+
+    <target name="mkdirs" depends="clean">
+            <mkdir dir="${build.dir}/dist" />
+            <mkdir dir="${build.dir}/lib" />
+    </target>	
+
+    <target name="deploy-all">
+
+            <copy todir="${alfresco.home}/tomcat/webapps/" overwrite="true">
+                    <fileset dir="${web.dir}/webapps/" />
+            </copy>
+
+            <copy todir="${alfresco.shared.dir}" overwrite="true">
+                    <fileset dir="${web.dir}/shared/alfresco" />
+            </copy>
+    </target>
+
+
+</project>

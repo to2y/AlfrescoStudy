@@ -1,0 +1,11 @@
+<webscript>
+	<shortname>Publish Document to alldivision site</shortname>
+	<description>
+  <![CDATA[
+   Publish Document to alldivision site
+  ]]></description>
+	<url>/study/publishdoc</url>
+	<format default="json">argument</format>
+	<authentication>user</authentication>
+	<transaction>required</transaction>
+</webscript>
