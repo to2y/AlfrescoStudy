@@ -1,0 +1,337 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>jp.aegif.alfresco.study</groupId>
+  <artifactId>AlfrescoStudy25WorkflowDemo</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <dist_test_dir>${project.build.directory}/dist_test</dist_test_dir>
+    <dist_test_webapps>${dist_test_dir}/webapps</dist_test_webapps>
+    <dist_test_shared>${dist_test_dir}/shared</dist_test_shared>
+    <dist_test_conf>${dist_test_dir}/conf</dist_test_conf>
+    <dist_test_scripts>${dist_test_dir}/scripts</dist_test_scripts>
+    <dist_test_alf_lib>${dist_test_webapps}/alfresco/WEB-INF/lib</dist_test_alf_lib>
+    <dist_test_share_lib>${dist_test_webapps}/share/WEB-INF/lib</dist_test_share_lib>
+    <shared_jar_target_dir>${project.build.directory}/shared_jar_target</shared_jar_target_dir>
+    <dist_prod_dir>${project.build.directory}/dist_prod</dist_prod_dir>
+    <dist_prod_webapps>${dist_prod_dir}/webapps</dist_prod_webapps>
+    <dist_prod_shared>${dist_prod_dir}/shared</dist_prod_shared>
+    <dist_prod_conf>${dist_prod_dir}/conf</dist_prod_conf>
+    <dist_prod_scripts>${dist_prod_dir}/scripts</dist_prod_scripts>
+    <dist_prod_alf_lib>${dist_prod_webapps}/alfresco/WEB-INF/lib</dist_prod_alf_lib>
+    <dist_prod_share_lib>${dist_prod_webapps}/share/WEB-INF/lib</dist_prod_share_lib>
+    <dist_prod_shared_lib>${dist_prod_shared}/lib</dist_prod_shared_lib>
+  </properties>
+
+  <repositories>
+    <repository>
+      <id>alfresco-mirror</id>
+      <name>Alfresco Public Mirror</name>
+      <url>http://maven.alfresco.com/nexus/content/groups/public</url>
+    </repository>
+  </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <name>oss.sonatype.org</name>
+      <id>oss.sonatype.org</id>
+      <url>http://oss.sonatype.org/content/groups/public</url>
+    </pluginRepository>
+  </pluginRepositories>
+  <dependencies>
+    <dependency>
+      <groupId>org.alfresco</groupId>
+      <artifactId>alfresco-repository</artifactId>
+      <version>4.2.f</version>
+    </dependency>
+    <dependency>
+      <groupId>org.alfresco</groupId>
+      <artifactId>alfresco-remote-api</artifactId>
+      <version>4.2.f</version>
+    </dependency>
+    <dependency>
+      <groupId>org.alfresco</groupId>
+      <artifactId>alfresco-share</artifactId>
+      <version>4.2.f</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.alfresco</groupId>
+          <artifactId>alfresco-web-framework-commons</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.1</version>
+          <configuration>
+              <source>1.7</source>
+              <target>1.7</target>
+          </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.4</version>
+        <configuration>
+          <archive>
+            <addMavenDescriptor>false</addMavenDescriptor>
+          </archive>
+        </configuration>
+        <executions>
+          <execution>
+            <id>default-jar</id>
+            <phase>none</phase>
+          </execution>
+          <execution>
+            <id>make-dm-jar</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <configuration>
+              <classifier>alfresco-custom</classifier>
+              <outputDirectory>${project.build.directory}</outputDirectory>
+              <finalName>study25</finalName>
+            </configuration>
+          </execution>
+          <execution>
+            <id>make-share-jar</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <configuration>
+              <classifier>share-custom</classifier>
+              <outputDirectory>${project.build.directory}</outputDirectory>
+              <finalName>study25</finalName>
+            </configuration>
+          </execution>
+          <execution>
+            <id>make-shared-jar</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <configuration>
+              <classesDirectory>${shared_jar_target_dir}</classesDirectory>
+              <classifier>shared-custom</classifier>
+              <outputDirectory>${project.build.directory}</outputDirectory>
+              <finalName>study25</finalName>
+              <includes>
+                <include>**/*</include>
+              </includes>
+              <excludes>
+                <exclude>**/alfresco-global.properties</exclude>
+                <exclude>**/share-config-custom.xml</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-shared-jar-target-files</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <tasks>
+                <mkdir dir="${shared_jar_target_dir}" />
+                <mkdir dir="${shared_jar_target_dir}/META-INF" />
+                <copy todir="${shared_jar_target_dir}" preservelastmodified="true">
+                  <fileset dir="web/shared/classes" />
+                </copy>
+                <copy todir="${shared_jar_target_dir}/META-INF" preservelastmodified="true">
+                  <fileset dir="web/webapps/share" >
+                    <exclude name="WEB-INF/" />
+                    <exclude name="*.jsp" />
+                  </fileset>
+                </copy>
+              </tasks>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-prod-files</id>
+            <phase>package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <tasks>
+                <mkdir dir="${dist_prod_dir}" />
+                <mkdir dir="${dist_prod_webapps}" />
+                <mkdir dir="${dist_test_shared}" />
+                <mkdir dir="${dist_prod_shared_lib}" />
+                <mkdir dir="${dist_prod_conf}" />
+                <copy todir="${dist_prod_webapps}" preservelastmodified="true">
+                  <fileset dir="web/webapps">
+                    <include name="alfresco/**/*" />
+                    <include name="share/WEB-INF/**/*" />
+                    <include name="share/*.jsp" />
+                  </fileset>
+                </copy>
+                <copy todir="${dist_prod_shared}" preservelastmodified="true">
+                  <fileset dir="web/shared">
+                    <include name="**/alfresco-global.properties" />
+                    <include name="**/share-config-custom.xml" />
+                  </fileset>
+                </copy>
+                <copy todir="${dist_prod_conf}" preservelastmodified="true">
+                  <fileset dir="conf" />
+                </copy>
+                <copy todir="${dist_prod_scripts}" preservelastmodified="true">
+                  <fileset dir="scripts" />
+                </copy>
+                <copy file="${project.build.directory}/study25-alfresco-custom.jar" todir="${dist_prod_alf_lib}" preservelastmodified="true" />
+                <copy file="${project.build.directory}/study25-share-custom.jar" todir="${dist_prod_share_lib}" preservelastmodified="true" />
+                <copy file="${project.build.directory}/study25-shared-custom.jar" todir="${dist_prod_shared_lib}" preservelastmodified="true" />
+              </tasks>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-test-files</id>
+            <phase>package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <tasks>
+                <mkdir dir="${dist_test_dir}" />
+                <mkdir dir="${dist_test_webapps}" />
+                <mkdir dir="${dist_test_shared}" />
+                <mkdir dir="${dist_test_conf}" />
+                <copy todir="${dist_test_webapps}" preservelastmodified="true">
+                  <fileset dir="web/webapps" />
+                </copy>
+                <copy todir="${dist_test_shared}" preservelastmodified="true">
+                  <fileset dir="web/shared" />
+                </copy>
+                <copy todir="${dist_test_conf}" preservelastmodified="true">
+                  <fileset dir="conf" />
+                </copy>
+                <copy todir="${dist_test_scripts}" preservelastmodified="true">
+                  <fileset dir="scripts" />
+                </copy>
+                <copy file="${project.build.directory}/study25-alfresco-custom.jar" todir="${dist_test_alf_lib}" preservelastmodified="true" />
+                <copy file="${project.build.directory}/study25-share-custom.jar" todir="${dist_test_share_lib}" preservelastmodified="true" />
+              </tasks>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>net.alchim31.maven</groupId>
+        <artifactId>yuicompressor-maven-plugin</artifactId>
+        <version>1.4.0</version>
+        <executions>
+          <execution>
+            <id>yui-compress-prod-files</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>compress</goal>
+            </goals>
+            <configuration>
+              <sourceDirectory>${shared_jar_target_dir}/META-INF/components</sourceDirectory>
+              <outputDirectory>${shared_jar_target_dir}/META-INF/components</outputDirectory>
+              <linebreakpos>-1</linebreakpos>
+              <encoding>UTF-8</encoding>
+              <preserveAllSemiColons>true</preserveAllSemiColons>
+              <force>true</force>
+              <jswarn>false</jswarn>
+              <excludes>
+                <exclude>**/*.css</exclude>
+                <exclude>**/*-min.js</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>yui-compress-test-files</id>
+            <phase>package</phase>
+            <goals>
+              <goal>compress</goal>
+            </goals>
+            <configuration>
+              <sourceDirectory>${dist_test_webapps}/share/components</sourceDirectory>
+              <outputDirectory>${dist_test_webapps}/share/components</outputDirectory>
+              <linebreakpos>-1</linebreakpos>
+              <encoding>UTF-8</encoding>
+              <preserveAllSemiColons>true</preserveAllSemiColons>
+              <force>true</force>
+              <jswarn>false</jswarn>
+              <excludes>
+                <exclude>**/*.css</exclude>
+                <exclude>**/*-min.js</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>2.6</version>
+        <executions>
+          <execution>
+            <id>copy-dependency-files-to-test</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <includeGroupIds>nu.validator.htmlparser</includeGroupIds>
+              <includeArtifactIds>htmlparser</includeArtifactIds>
+              <outputDirectory>${dist_test_alf_lib}</outputDirectory>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-dependency-files-to-prod</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <includeGroupIds>nu.validator.htmlparser</includeGroupIds>
+              <includeArtifactIds>htmlparser</includeArtifactIds>
+              <outputDirectory>${dist_prod_alf_lib}</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <versionRange>[2.0,)</versionRange>
+                    <goals>
+                      <goal>copy-dependencies</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <execute />
+                  </action>
+                </pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+</project>
