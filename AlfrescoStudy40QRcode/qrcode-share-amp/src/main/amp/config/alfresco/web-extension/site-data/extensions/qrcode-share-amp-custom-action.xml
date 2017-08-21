@@ -1,0 +1,28 @@
+<extension>
+	<modules>
+		<module>
+			<id>qrcode-share-amp</id>
+			<version>1.0</version>
+			<auto-deploy>true</auto-deploy>
+			<configurations>
+				<config evaluator="string-compare" condition="DocLibActions">
+					<actions>
+						...
+						<action id="jp.aegif.study.show-qr" type="link"
+							label="jp.aegif.study.show-qr.label">
+							<param name="href">/share/proxy/alfresco/study/show-qr?noderef={node.nodeRef}
+							</param>
+							<param name="target">_blank</param>
+						</action>
+					</actions>
+					<actionGroups>
+						<actionGroup id="document-browse">
+							<action index="403"
+								id="jp.aegif.study.show-qr" />
+						</actionGroup>
+					</actionGroups>
+				</config>
+			</configurations>
+		</module>
+	</modules>
+</extension>

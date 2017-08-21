@@ -1,0 +1,9 @@
+<webscript>
+  <shortname>Get QR code for node</shortname>
+  <description>Get QR code for node</description>
+  <url>/study/show-qr?noderef={noderef}</url>
+  <format default="json">argument</format>
+  <!-- Solr api is protected by a solr-specific authentication mechanism -->
+  <authentication>user</authentication>
+  <transaction allow="readonly">required</transaction>
+</webscript>

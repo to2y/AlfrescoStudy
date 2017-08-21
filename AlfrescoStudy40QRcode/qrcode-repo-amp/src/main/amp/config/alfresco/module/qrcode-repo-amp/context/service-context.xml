@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+
+<beans>
+    <bean id="update-by-qr" class="jp.aegif.study.qrcode.UpdateByQRCodeAction">
+    <property name="nodeService">
+        <ref bean="NodeService" />
+    </property>
+    <property name="contentService">
+    	<ref bean="ContentService" />
+    </property>
+    <property name="publicAction">
+        <value>true</value>
+    </property>
+</bean>    
+</beans>
