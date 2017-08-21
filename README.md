@@ -1,4 +1,10 @@
 AlfrescoStudy
 =============
 
-Sample codes of Alfresco study
+Alfresco勉強会で紹介したカスタマイズのソースコードを公開しています。
+
+* #15 AlfrescoでAND型の権限解決するデモ実装
+* #17 Alfrescoの文書をリポジトリの別の場所にパブリッシュするアクションのデモ実装
+* #25 Alfrescoにワークフローを追加するデモ実装
+
+
