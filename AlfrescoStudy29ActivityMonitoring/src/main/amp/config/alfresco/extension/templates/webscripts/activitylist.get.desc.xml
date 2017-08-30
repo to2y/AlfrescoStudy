@@ -1,0 +1,7 @@
+<webscript>
+    <shortname>Activity List</shortname>
+    <description>Activity List</description>
+    <url>/study/activitylist</url>
+    <authentication>none</authentication>
+    <format default="html"></format>
+</webscript>
